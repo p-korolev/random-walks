@@ -79,6 +79,24 @@ class Walk():
                            add_probability = self.add_probability,
                            uniform = self.float_steps)
 
+    # get step differences
+    # return list will be of size n-1, if size(walk) = n
+    def get_stepdiff(self) -> list[float]:
+        # base case
+        if (self.size<2):
+            return None
+
+        stepdiff = []
+
+        # traverse walk and append difference to next step
+        for step_index in range(self.size - 1):
+            stepdiff.append(self.current_walk[step_index + 1] - self.current_walk[step_index])
+        
+        # return stepdiff, len = n-1
+        return stepdiff
+    
+
+
     # plot current walk and walk attributes
     def plot_walk(self, linemarker: bool = True,
                   show_sma: bool = False, 
@@ -130,5 +148,4 @@ class Walk():
 
         plt.legend()
         plt.show()
-
 
