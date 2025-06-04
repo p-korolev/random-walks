@@ -62,7 +62,6 @@ class Walk():
                     self.current_walk.append(self.current_value - random_val) 
                     self.current_value = self.current_walk[-1]
         
-
     # re-generate walk beginning at start value
     def regenerate_walk(self) -> None:
         # save previous values
@@ -87,7 +86,6 @@ class Walk():
             return None
 
         stepdiff = []
-
         # traverse walk and append difference to next step
         for step_index in range(self.size - 1):
             stepdiff.append(self.current_walk[step_index + 1] - self.current_walk[step_index])
@@ -95,8 +93,6 @@ class Walk():
         # return stepdiff, len = n-1
         return stepdiff
     
-
-
     # plot current walk and walk attributes
     def plot_walk(self, linemarker: bool = True,
                   show_sma: bool = False, 
@@ -134,7 +130,7 @@ class Walk():
             # plot running variance
             plt.plot(X, var_list, color="mediumvioletred", label="Variance")
 
-        # plot volatility
+        # plot volatility (standard dev)
         if (show_volatility):
             vol_list = []
             seen = []
