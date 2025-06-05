@@ -93,18 +93,27 @@ class Walk():
         # return stepdiff, len = n-1
         return stepdiff
     
+    # return list of new step's direction, 1: up, -1: down
+    def get_step_direction(self) -> list[float]:
+        diff = self.get_stepdiff()
+        directions = []
+        for value in diff:
+            directions.append(value/abs(value))
+        return directions
+        
     # plot current walk and walk attributes
     def plot_walk(self, linemarker: bool = True,
                   show_sma: bool = False, 
                   sma_period: int = None, 
                   show_running_variance: bool = False, 
                   show_volatility: bool = False) -> None:
-        
+        color = ["steelblue", "turquoise", "mediumvioletred", "darkviolet"]
+
         # plot walk
         X = sh.generate_X(self.size)
         Y = self.current_walk 
-        if linemarker: plt.plot(X, Y, color='steelblue', marker='o', label="Random Walk")
-        if not linemarker: plt.plot(X, Y, color='steelblue', label="Random Walk")
+        if linemarker: plt.plot(X, Y, color=color[0], marker='o', label="Walk") 
+        else: plt.plot(X, Y, color=color[0], label="Walk")
 
         # plot moving average
         if (show_sma):
@@ -116,7 +125,7 @@ class Walk():
             sma_Y = sma_tuple[1]
 
             # plot moving average
-            plt.plot(sma_X, sma_Y, color = "turquoise", label="Simple Moving Average")
+            plt.plot(sma_X, sma_Y, color = color[1], label="Simple Moving Average")
         
         # plot running variance
         if (show_running_variance):
@@ -128,7 +137,7 @@ class Walk():
                 # calculate current variance
                 var_list.append(sh.variance(seen))
             # plot running variance
-            plt.plot(X, var_list, color="mediumvioletred", label="Variance")
+            plt.plot(X, var_list, color=color[2], label="Variance")
 
         # plot volatility (standard dev)
         if (show_volatility):
@@ -140,8 +149,9 @@ class Walk():
                 # calculate current volatility = sqrt(variance)
                 vol_list.append(math.sqrt(sh.variance(seen)))
             # plot running volatility (sd)
-            plt.plot(X, vol_list, color="darkviolet", label="Volatility (sd)")
+            plt.plot(X, vol_list, color=color[3], label="Volatility (sd)")
 
         plt.legend()
         plt.show()
+
 

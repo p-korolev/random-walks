@@ -1,5 +1,7 @@
+# module to retrieve real market data
 import math, numpy as np, matplotlib.pyplot as plt, yfinance as yf, pandas as pd, stat_helper as sh
 
+# -------------------------------------- Stock pricing data ----------------------------------------- #
 # get size of df
 def get_size(frame: pd.DataFrame):
     return frame.size
@@ -24,6 +26,8 @@ def fetch_price_data(stock: str, timerange: str) -> pd.DataFrame:
     return frame 
 
 def plot_price_data(stock: str, timerange: str, sma_period=3, multiple_sma=False, show_variance=False):
+    colors = ["blue", "green", "orange", "red", " purple", "pink"]
+
     # general data load
     data = fetch_price_data(stock, timerange)
 
@@ -33,7 +37,7 @@ def plot_price_data(stock: str, timerange: str, sma_period=3, multiple_sma=False
     # get & plot price data
     prices = extract_prices(data)
     X = generate_X_axis(prices)
-    axs[0].plot(X, prices, color="blue", label="Price")
+    axs[0].plot(X, prices, color=colors[0], label="Price")
 
     # basic indicator -- Simple Moving Average
     sma = sh.sma(prices, sma_period)
@@ -42,21 +46,16 @@ def plot_price_data(stock: str, timerange: str, sma_period=3, multiple_sma=False
     if (multiple_sma):
         secondary_period = sma_period*2
         secondary_sma = sh.sma(prices, secondary_period)
-        axs[0].plot(np.array(sma[0]), np.array(sma[1]), color="green", label=f"SMA {sma_period}")
-        axs[0].plot(np.array(secondary_sma[0]), np.array(secondary_sma[1]), color="orange", label=f"SMA {secondary_period}")
+        axs[0].plot(np.array(sma[0]), np.array(sma[1]), color=colors[1], label=f"SMA {sma_period}")
+        axs[0].plot(np.array(secondary_sma[0]), np.array(secondary_sma[1]), color=colors[2], label=f"SMA {secondary_period}")
     if (not multiple_sma):
-        axs[0].plot(np.array(sma[0]), np.array(sma[1]), color="green", label=f"SMA {sma_period}")
+        axs[0].plot(np.array(sma[0]), np.array(sma[1]), color=colors[1], label=f"SMA {sma_period}")
     
     # basic indicator -- Linear Regression
-    import scipy.stats as S
-    reg = S.linregress(X, prices)
-
-    # get regression formula
-    b0, b1 = reg.intercept, reg.slope
-    prices_reg = [(b1*x + b0) for x in X]
+    prices_reg = sh.get_Ylistregress(X, prices)
 
     # plot regression line
-    axs[0].plot(X, prices_reg, color="red", label="Linreg.")
+    axs[0].plot(X, prices_reg, color=colors[3], label="Linreg.")
     
     # get variance data
     prices_var = []
@@ -75,12 +74,16 @@ def plot_price_data(stock: str, timerange: str, sma_period=3, multiple_sma=False
 
     # plot variance/volatility 
     if (show_variance):
-        axs[1].plot(X, prices_var, color="purple", label="Variance")
-        axs[1].plot(X, prices_vol, color="pink", linestyle="dashed", label="Volatility")
+        axs[1].plot(X, prices_var, color=colors[4], label="Variance")
+        axs[1].plot(X, prices_vol, color=colors[5], linestyle="dashed", label="Volatility")
     if (not show_variance):
-        axs[1].plot(X, prices_vol, color="pink", linestyle="dashed", label="Volatility")
+        axs[1].plot(X, prices_vol, color=colors[5], linestyle="dashed", label="Volatility")
     
     # enable plot lend and show
     axs[0].legend()
     axs[1].legend()
     plt.show()
+
+# -------------------------------------- Misc. market data ----------------------------------------- #
+
+
