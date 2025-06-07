@@ -8,4 +8,4 @@ Using parameterized random walks to produce controlled random markets.
 
 📌 Analyze and visualize the behaviour of parameterized random walks.
 
-📌 Reproduce historical market by parameterizing a set of random walks.
+📌 Reproduce historical markets by parameterizing a set of random walks.
