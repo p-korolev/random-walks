@@ -62,7 +62,7 @@ def sd(data_set: list[float]) -> float:
 
 # get moving average given period
 def sma(data_set: list[float], period: int) -> tuple[list]:
-    '''Returns tuple where tuple[0] -> X axis, tuple[1] -> Y axis'''
+    '''Returns tuple where tuple[0] -> X axis, tuple[1] -> Y axis (Y[i] stores the SMA value after X[i] days for given period)'''
     # basic variables
     size = len(data_set)
     reversed_data = data_set[::-1]

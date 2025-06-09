@@ -1,66 +1,117 @@
-import math, random as rd, stat_helper as sh, matplotlib.pyplot as plt
+import math, random as rd, stat_helper as sh
+import matplotlib.pyplot as plt
+import numpy as np
+from interval import Interval 
 
 class Walk():
-    def __init__(self, start_val: float):
-        self.size = 1                                # initial size
+    def __init__(self,
+                 size: int = 0, 
+                 start_val: float = None,
+                 add_interval: Interval = None,
+                 add_probability: float = None,
+                 uniform_random: bool = True):
+        '''
+        Creates a random walk using generate_walk. Walk stored in current_walk as a list.
+
+        :param size: Number of steps in the walk.
+        :param start_val: Starting value: current_walk[0].
+        :param add_interval: Interval to take next random additive step.
+        :param add_probability: Probability that we step forward.
+        :param uniform_random: True if random values should come from Reals. False for Integers.
+        '''       
+        # handle missing parameters when selected walk size>0
+        if (size!=0 and (start_val==None or add_interval == None or add_probability==None)):
+            raise Exception("Missing Parameters.")
+
+        # initalize attributes
         self.start = start_val                       # walk start value
         self.current_walk = [start_val]              # initial walk path (start value)
+        self.size = 1                                # current size before generating walk
+        if size == 0: self.size = 0
         self.current_value = start_val               # initial last appended step position
-        
-        # will update once walk gets generated
-        self.add_interval = None 
-        self.add_probability = None
-        self.float_steps = False 
+        self.add_interval = add_interval
+        self.add_probability = add_probability
+        self.float_steps = uniform_random
+
+        # generate walk given walk parameters
+        self.generate_walk(num_steps=size, 
+                           add_interval=add_interval,
+                           add_probability=add_probability,
+                           uniform=uniform_random)
 
     # view current walk path
     def view_walk(self) -> list:
         return self.current_walk
     
+    def view_walk_np(self) -> np.array:
+        return np.ndarray(self.current_walk)
+
     # get current walk size
     def get_size(self) -> int:
         return self.size
     
     # generate walk beginning at current value
-    def generate_walk(self, num_steps: int, add_interval: list = [1, 1], 
+    def generate_walk(self, num_steps: int, add_interval: Interval = Interval(-1,1), 
                       add_probability: float = 0.5, uniform: bool = False) -> None:
-        '''Custom add_interval format: [0, x]'''
-        # update walk characteristics
-        self.size += num_steps
-        self.add_interval = add_interval
-        self.add_probability = add_probability
-        self.float_steps = uniform
+        '''
+        Generates walk given parameters and updates object attributes.
 
+        :param num_steps: Number of steps in the walk.
+        :param add_interval: Interval to take next random additive step.
+        :param add_probability: Probability that we step forward.
+        :param uniform: True if random values should come from Reals. False for Integers.
+
+        **Usage**
+
+        Generate a 100 step walk starting at self.start, adding a random value d in D = [-4.56, 5.88] (subset of R) with probability 72%, while
+        subtracting the value with probability 1 - 72%:
+
+        >>> interval = Interval(-4.56, 5.88)
+
+        >>> self.generate_walk(num_steps=100, add_interval=interval, add_probability=0.72, uniform=True)
+        '''
+       
         # for validation
         count_over, count_under = 0, 0
         # generate walk
-        for step in range(num_steps):
+        for step in range(num_steps - 1):
             # get +/- decision
             decision = rd.uniform(0,1)
 
-            # if interval subset Z
+            # if interval subset R
             if (uniform):
                 # generate random +/- value
-                random_val = rd.uniform(add_interval[0], add_interval[1])
+                random_val = rd.uniform(add_interval.get_lower_bound(), add_interval.get_upper_bound())
                 # if decision within add_probability, add radom value
                 # else, subtract
                 if decision<add_probability:
                     count_under += 1
+
+                    # append new step
                     self.current_walk.append(self.current_value + random_val)
+
+                    # update current step
                     self.current_value = self.current_walk[-1]
+
+                    # update size
+                    self.size += 1
                 else:
                     count_over += 1
                     self.current_walk.append(self.current_value - random_val)
                     self.current_value = self.current_walk[-1]
+                    self.size += 1
 
-            # if interval subset R
+            # if interval subset Z
             if (not uniform):
-                random_val = rd.randint(add_interval[0], add_interval[1])
+                random_val = rd.randint(add_interval.get_lower_bound(), add_interval.get_upper_bound())
                 if decision<add_probability:
                     self.current_walk.append(self.current_value + random_val)
                     self.current_value = self.current_walk[-1]
+                    self.size += 1
                 else:
                     self.current_walk.append(self.current_value - random_val) 
                     self.current_value = self.current_walk[-1]
+                    self.size += 1
         
     # re-generate walk beginning at start value
     def regenerate_walk(self) -> None:
@@ -153,5 +204,3 @@ class Walk():
 
         plt.legend()
         plt.show()
-
-
