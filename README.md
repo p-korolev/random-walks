@@ -1,3 +1,3 @@
 # **Random Walks**
 
-Parameterizing and modelling random walks.
+Modelling parameterized random walks. Stock market behaviour comparison.
