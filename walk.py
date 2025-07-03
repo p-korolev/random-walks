@@ -1,6 +1,6 @@
 import math
+import stat
 import random as rd
-import stat_helper as sh
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -165,7 +165,7 @@ class Walk():
         color = ["steelblue", "turquoise", "mediumvioletred", "darkviolet"]
 
         # plot walk
-        X = sh.generate_X(self.size)
+        X = stat.generate_X(self.size)
         Y = self.current_walk 
         if linemarker: plt.plot(X, Y, color=color[0], marker='o', label="Walk") 
         else: plt.plot(X, Y, color=color[0], label="Walk")
@@ -190,7 +190,7 @@ class Walk():
                 seen.append(step)
 
                 # calculate current variance
-                var_list.append(sh.variance(seen))
+                var_list.append(stat.variance(seen))
             # plot running variance
             plt.plot(X, var_list, color=color[2], label="Variance")
 
@@ -202,7 +202,7 @@ class Walk():
                 seen.append(step)
 
                 # calculate current volatility = sqrt(variance)
-                vol_list.append(math.sqrt(sh.variance(seen)))
+                vol_list.append(math.sqrt(stat.variance(seen)))
             # plot running volatility (sd)
             plt.plot(X, vol_list, color=color[3], label="Volatility (sd)")
 
