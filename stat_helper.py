@@ -1,20 +1,24 @@
-import math, numpy as np
+# Helper module for stats
 
-# convert data_set[float] to np array
-def convert_set_np(data_set: list[float]) -> np.ndarray:
+import math
+import numpy as np
+import pandas as pd
+import scipy.stats as S
+
+from scipy.stats import norm
+from typing import Union, List, Any
+
+def convert_set_np(data_set: List[float]) -> np.ndarray:
     return np.array(data_set)
 
-# generate X: returns list from 1 to size
+# Returns incremental list from 1 to size
 def generate_X(size: int) -> list[int]:
     return list(range(1, size+1))
 
-#helper partitioning function
-def partition_set(lst: list, n: int) -> list[list]:
-    '''Partitions list into n lists'''
-    # pick up key indexing info
+# Partinioning function for rolling calculations
+def partition_set(lst: List, n: int) -> List[List[Any]]:
     length = len(lst)
     index_border = (length//n)*n
-    
     # p: current partition, final_P: returned list
     p = []
     final_P = []
@@ -25,29 +29,18 @@ def partition_set(lst: list, n: int) -> list[list]:
             p=[]
             continue
         if i+1%n != 0 or i==0:
-            p.append(lst[i])   
-
-    # Append then rest of the list if n !divides len(lst)  
+            p.append(lst[i])     
     if (len(lst)%n!=0):
         final_P.append(lst[index_border:])
-
     return final_P
 
-#get mean of sample
-def average(data_set: list[float]) -> float:
-    avg = sum(data_set)/len(data_set)
-    return avg
+def average(data_set: Union[List, pd.Series]) -> float:
+    return sum(data_set)/len(data_set)
 
-# get variance of data set
-def variance(data_set: list[float]) -> float:
-    # sample size
+def variance(data_set: Union[List, pd.Series]) -> float:
     size = len(data_set)
-
-    # base check
     if size<2:
         return 0
-    
-    # get mean
     mean = average(data_set)
     s = 0
     for val in data_set:
@@ -55,13 +48,11 @@ def variance(data_set: list[float]) -> float:
     variance = s/(size-1)
     return variance
 
-# get standard devation of data set
-def sd(data_set: list[float]) -> float:
-    variance = variance(data_set)
-    return math.sqrt(variance)
+def sd(data_set: Union[List, pd.Series]) -> float:
+    return math.sqrt(variance(data_set))
 
-# get moving average given period
-def sma(data_set: list[float], period: int) -> tuple[list]:
+# Moving average using partitioning function
+def sma(data_set: Union[List, pd.Series], period: int) -> tuple[list]:
     '''Returns tuple where tuple[0] -> X axis, tuple[1] -> Y axis (Y[i] stores the SMA value after X[i] days for given period)'''
     # basic variables
     size = len(data_set)
@@ -85,20 +76,11 @@ def sma(data_set: list[float], period: int) -> tuple[list]:
 
     return sma_X, sma_Y
 
-import scipy.stats as S
-# return regression Y values given X, Y sets
 def get_Ylistregress(X: list, Y: list[float]) -> list[float]:
-    # load regression info
     regbase = S.linregress(X, Y)
-
-    # pull function variables
     b0, b1 = regbase.intercept, regbase.slope
-
-    # build and return Y_regression values list
     Y_reg = [(b0 + b1*x) for x in X]
     return Y_reg
 
-# return normal index
-from scipy.stats import norm
 def get_normal(value: float) -> float:
     return norm.cdf(value)
