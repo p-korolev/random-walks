@@ -1,7 +1,11 @@
-import math, random as rd, stat_helper as sh
+import math
+import random as rd
+import stat_helper as sh
 import matplotlib.pyplot as plt
 import numpy as np
+
 from interval import Interval 
+from typing import Union, List, Any
 
 class Walk():
     def __init__(self,
@@ -40,10 +44,10 @@ class Walk():
                            uniform=uniform_random)
 
     # view current walk path
-    def view_walk(self) -> list:
+    def view_walk(self) -> List[float]:
         return self.current_walk
     
-    def view_walk_np(self) -> np.array:
+    def view_walk_np(self) -> np.ndarray:
         return np.ndarray(self.current_walk)
 
     # get current walk size
@@ -51,8 +55,7 @@ class Walk():
         return self.size
     
     # generate walk beginning at current value
-    def generate_walk(self, num_steps: int, add_interval: Interval = Interval(-1,1), 
-                      add_probability: float = 0.5, uniform: bool = False) -> None:
+    def generate_walk(self, num_steps: int, add_interval: Interval = Interval(-1,1), add_probability: float = 0.5, uniform: bool = False) -> None:
         '''
         Generates walk given parameters and updates object attributes.
 
@@ -131,7 +134,7 @@ class Walk():
 
     # get step differences
     # return list will be of size n-1, if size(walk) = n
-    def get_stepdiff(self) -> list[float]:
+    def get_stepdiff(self) -> List[float]:
         # base case
         if (self.size<2):
             return None
@@ -145,7 +148,7 @@ class Walk():
         return stepdiff
     
     # return list of new step's direction, 1: up, -1: down
-    def get_step_direction(self) -> list[float]:
+    def get_step_direction(self) -> List[float]:
         diff = self.get_stepdiff()
         directions = []
         for value in diff:
@@ -153,7 +156,8 @@ class Walk():
         return directions
         
     # plot current walk and walk attributes
-    def plot_walk(self, linemarker: bool = True,
+    def plot_walk(self, 
+                  linemarker: bool = True,
                   show_sma: bool = False, 
                   sma_period: int = None, 
                   show_running_variance: bool = False, 
