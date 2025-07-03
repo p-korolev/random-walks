@@ -1,7 +1,8 @@
-from walk import Walk
-import price_data_config as pconfig
+import pricing
 import stat_helper as S
 
+from walk import Walk
+from typing import Union, Any, List
 
 class List(list):
     def is_empty(self):
