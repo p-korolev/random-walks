@@ -1,5 +1,10 @@
 # module to retrieve real market data
-import math, numpy as np, matplotlib.pyplot as plt, yfinance as yf, pandas as pd, stat_helper as sh
+import math
+import numpy as np
+import matplotlib.pyplot as plt
+import yfinance as yf
+import pandas as pd
+import stat_helper as sh
 
 # -------------------------------------- Stock pricing data ----------------------------------------- #
 # get size of df
@@ -85,5 +90,6 @@ def plot_price_data(stock: str, timerange: str, sma_period=3, multiple_sma=False
     plt.show()
 
 # -------------------------------------- Misc. market data ----------------------------------------- #
+
 
 
