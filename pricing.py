@@ -1,4 +1,3 @@
-# module to retrieve real market data
 import math
 import numpy as np
 import matplotlib.pyplot as plt
@@ -6,15 +5,12 @@ import yfinance as yf
 import pandas as pd
 import stat_helper as sh
 
-# -------------------------------------- Stock pricing data ----------------------------------------- #
-# get size of df
-def get_size(frame: pd.DataFrame):
+def get_size(frame: pd.DataFrame) -> int:
     return frame.size
 
 def extract_prices(frame: pd.DataFrame) -> np.ndarray:
     return np.array(frame["Close"].tolist())
 
-# even more general:
 def extract_column(frame: pd.DataFrame, metric: str) -> np.ndarray:
     metric = metric.strip().lower()
     return np.array(frame[metric].tolist())
@@ -24,7 +20,9 @@ def generate_X_axis(Y: np.array) -> np.ndarray:
     return axis
 
 def fetch_price_data(stock: str, timerange: str) -> pd.DataFrame:
-    '''timerange: 1m, 1h, 1d, 1w, 1mo, 3mo, 6mo, 1y, 2y, 5y'''
+    '''
+    :param timerange: 1m, 1h, 1d, 1w, 1mo, 3mo, 6mo, 1y, 2y, 5y
+    '''
     timerange = timerange.lower().strip()
     load = yf.Ticker(stock)
     frame = load.history(timerange)
@@ -72,8 +70,6 @@ def plot_price_data(stock: str, timerange: str, sma_period=3, multiple_sma=False
         # plot running variance
 
     prices_vol = [math.sqrt(variance) for variance in prices_var]
-
-    # reformat
     prices_var = np.array(prices_var)
     prices_vol = np.array(prices_vol)
 
@@ -83,13 +79,11 @@ def plot_price_data(stock: str, timerange: str, sma_period=3, multiple_sma=False
         axs[1].plot(X, prices_vol, color=colors[5], linestyle="dashed", label="Volatility")
     if (not show_variance):
         axs[1].plot(X, prices_vol, color=colors[5], linestyle="dashed", label="Volatility")
-    
-    # enable plot lend and show
     axs[0].legend()
     axs[1].legend()
     plt.show()
 
-# -------------------------------------- Misc. market data ----------------------------------------- #
+
 
 
 
