@@ -55,7 +55,11 @@ class Walk():
         return self.size
     
     # generate walk beginning at current value
-    def generate_walk(self, num_steps: int, add_interval: Interval = Interval(-1,1), add_probability: float = 0.5, uniform: bool = False) -> None:
+    def generate_walk(self, 
+                      num_steps: int, 
+                      add_interval: Interval = Interval(-1,1), 
+                      add_probability: float = 0.5, 
+                      uniform: bool = False) -> None:
         '''
         Generates walk given parameters and updates object attributes.
 
@@ -208,3 +212,4 @@ class Walk():
 
         plt.legend()
         plt.show()
+
