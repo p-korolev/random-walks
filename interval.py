@@ -2,7 +2,7 @@ import numpy as np
 
 from numbers import Real
 
-class Interval():
+class Interval:
     def __init__(self, 
                  lower_bound: Real, 
                  upper_bound: Real, 
@@ -27,3 +27,4 @@ class Interval():
     
     def to_np(self):
         return np.ndarray(self)
+
